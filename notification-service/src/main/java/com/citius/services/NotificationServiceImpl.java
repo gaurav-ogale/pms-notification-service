@@ -4,6 +4,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,10 +21,13 @@ public class NotificationServiceImpl implements NotificationService {
 	private JavaMailSender javaMailSender;
 
 	@Autowired
-	TemplateEngine templateEngine;
+	private TemplateEngine templateEngine;
 
 	@Autowired
-	MailProperties mailProperties;
+	private MailProperties mailProperties;
+
+	@Value("${spring.mail.username}")
+	String fromUser;
 
 	@Autowired
 	public NotificationServiceImpl(JavaMailSender javaMailSender) {
@@ -38,7 +42,7 @@ public class NotificationServiceImpl implements NotificationService {
 		String body = templateEngine.process(templateName, context);
 		MimeMessageHelper helper = new MimeMessageHelper(mail, true);
 		helper.setTo(to);
-		helper.setFrom("localhost@citiustech.com"); // set from address same as in prop file(username)
+		helper.setFrom(fromUser);
 		helper.setSubject(subject);
 
 		helper.setText(body, true);
@@ -65,5 +69,13 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 
 	}
+
+	@Override
+	public String forgetPasswordNotification(String userName, String defaultPass) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 
 }
